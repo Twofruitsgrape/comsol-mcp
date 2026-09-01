@@ -1,0 +1,6 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "COMSOL 使用指南：当用户提到 COMSOL、仿真、传热、流体、耦合、探针等关键词时，按照以下流程操作：\n1. 运行 start_comsol.bat 启动 COMSOL\n2. 使用 Python mph 库连接 Server (port=2036)\n3. 创建模型，所有操作在 Desktop 中实时显示\n4. 保存到 models/ 目录"
+  ]
+}
