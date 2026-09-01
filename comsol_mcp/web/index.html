@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>COMSOL MCP Dashboard</title>
+  <style>
+    body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; background: #0f1115; color: #e6e6e6; }
+    header { padding: 14px 20px; background: #171a21; border-bottom: 1px solid #2a2f3a; }
+    h1 { font-size: 16px; margin: 0; }
+    main { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .card { background: #171a21; border: 1px solid #2a2f3a; border-radius: 8px; padding: 14px; }
+    .card h2 { font-size: 13px; margin: 0 0 10px; color: #8ab4ff; text-transform: uppercase; letter-spacing: .05em; }
+    pre { white-space: pre-wrap; word-break: break-word; font-size: 12px; line-height: 1.5; margin: 0; }
+    .ok { color: #5ad17a; } .bad { color: #ff7b72; }
+    footer { padding: 10px 20px; color: #6b7280; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <header><h1>COMSOL MCP Dashboard</h1></header>
+  <main>
+    <div class="card"><h2>Session / GUI</h2><pre id="session">loading…</pre></div>
+    <div class="card"><h2>Model</h2><pre id="model">loading…</pre></div>
+  </main>
+  <footer>Auto-refresh every 3s. Start the GUI with the <code>launch_gui</code> MCP tool.</footer>
+  <script>
+    async function refresh() {
+      try {
+        const r = await fetch('/api/status');
+        const d = await r.json();
+        const s = d.session || {};
+        const sess = (s.active ? '● active' : '○ inactive') + '\n' +
+          'bridge: ' + (s.bridge_url || '-') + '\n' +
+          'port: ' + (s.port || '-') + '\n' +
+          'model: ' + (s.model_path || '-');
+        document.getElementById('session').textContent = sess;
+        document.getElementById('session').className = s.active ? 'ok' : 'bad';
+        document.getElementById('model').textContent = JSON.stringify(d.model, null, 2);
+      } catch (e) {
+        document.getElementById('session').textContent = 'error: ' + e;
+        document.getElementById('session').className = 'bad';
+      }
+    }
+    refresh();
+    setInterval(refresh, 3000);
+  </script>
+</body>
+</html>
